@@ -5,6 +5,7 @@ import dotenv from 'dotenv'
 import http from 'http'
 import ErrorHandler from './middlewears/errorHandler'
 import userRouter from './routes/userRoutes'
+import { connectDB } from './util/db'
 
 dotenv.config()
 
@@ -26,6 +27,7 @@ app.use(
 );
 
 const port = process.env.PORT || 5000;
+connectDB();
 app.get("/", (req, res) => {
     res.send("Crypto currency deals backend");
   });
