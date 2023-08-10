@@ -1,13 +1,13 @@
-import express from 'express'
-import cors from 'cors'
-import bodyParser from 'body-parser'
-import dotenv from 'dotenv'
-import http from 'http'
-import ErrorHandler from './middlewears/errorHandler'
-import userRouter from './routes/userRoutes'
-import { connectDB } from './util/db'
+import express from "express";
+import cors from "cors";
+import bodyParser from "body-parser";
+import dotenv from "dotenv";
+import http from "http";
+import ErrorHandler from "./middlewears/errorHandler";
+import userRouter from "./routes/userRoutes";
+import { connectDB } from "./util/db";
 
-dotenv.config()
+dotenv.config();
 
 //cors
 const app = express();
@@ -25,21 +25,22 @@ app.use(
     extended: true,
   })
 );
+app.set('trust proxy', true)
 
 const port = process.env.PORT || 5000;
 connectDB();
-app.get("/", (req, res) => {
-    res.send("Crypto currency deals backend");
-  });
-
-app.use('/api/users',userRouter)
+app.get("/", (req, res) => {  
+  res.send("Crypto currency deals backend" + req.ip);
+});
 
 
-  //Error handling middlewear
-  app.use(ErrorHandler)
+app.use("/api/users", userRouter);
 
-  const server = http.createServer(app);
+//Error handling middlewear
+app.use(ErrorHandler);
+
+const server = http.createServer(app);    
 
 server.listen(port, () => {
-    console.log(`Crypto Currency Deals listening at http://localhost:${port}`);
-  });
+  console.log(`Crypto Currency Deals listening at http://localhost:${port}`);
+});
