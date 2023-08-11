@@ -1,0 +1,14 @@
+cryptodeals_backend:
+    stage: deploy
+    before_script:
+        - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+        - mkdir -p ~/.ssh
+        - eval $(ssh-agent -s)
+        - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+    script:
+        - echo "Deploy to PM01"
+        - ssh-add <(echo "$SSH_KEY")
+        - rm -rf .git
+        - ssh -o StrictHostKeyChecking=no backend@10.10.10.69 "cd /home/backend/backend-cryptodeals; git reset --hard; git pull; pwd; source ~/.nvm/nvm.sh; nvm use 16; npm -v; npm install --force; npm install; pm2 restart 0; exit"
+    only:
+        - main
