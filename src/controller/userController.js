@@ -75,6 +75,7 @@ export const connectWallet = async (req, res, next) => {
           code: 200,
           status: "Success",
           message: "Wallet connected!",
+          user
         });
       } else {
         res.status(200).json({

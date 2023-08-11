@@ -25,12 +25,11 @@ app.use(
     extended: true,
   })
 );
-app.set('trust proxy', true)
 
 const port = process.env.PORT || 5000;
 connectDB();
 app.get("/", (req, res) => {  
-  res.send("Crypto currency deals backend" + req.ip);
+  res.send("Crypto currency deals backend");
 });
 
 
