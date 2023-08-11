@@ -82,6 +82,7 @@ export const connectWallet = async (req, res, next) => {
           code: 200,
           status: "Success",
           message: "connected!",
+          user
         });
       }
     }
