@@ -71,18 +71,22 @@ export const connectWallet = async (req, res, next) => {
       if (user.wallet === undefined) {
         user.wallet = wallet.toLowerCase();
         await user.save();
+        const userObject = user.toObject();
+        delete userObject.password;
         res.status(200).json({
           code: 200,
           status: "Success",
           message: "Wallet connected!",
-          user
+          user: userObject
         });
       } else {
+        const userObject = user.toObject();
+        delete userObject.password;
         res.status(200).json({
           code: 200,
           status: "Success",
           message: "connected!",
-          user
+          user: userObject
         });
       }
     }
