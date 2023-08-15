@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { User } from "../schema/user";
 
-//signup
+///signup
 export const signUp = async (req, res, next) => {
   try {
     const userData = req.body;
