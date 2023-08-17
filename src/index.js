@@ -32,7 +32,7 @@ app.get("/", (req, res) => {
   res.send("Crypto currency deals backend");
 });
 
-//making path public for accessing pictures
+///making path public for accessing pictures
 app.use("/public", express.static("public"));
 
 app.use("/api/users", userRouter);
