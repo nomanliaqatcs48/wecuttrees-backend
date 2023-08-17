@@ -28,17 +28,19 @@ app.use(
 
 const port = process.env.PORT || 5000;
 connectDB();
-app.get("/", (req, res) => {  
+app.get("/", (req, res) => {
   res.send("Crypto currency deals backend");
 });
 
+//making path public for accessing pictures
+app.use("/public", express.static("public"));
 
 app.use("/api/users", userRouter);
 
 //Error handling middlewear
 app.use(ErrorHandler);
 
-const server = http.createServer(app);    
+const server = http.createServer(app);
 
 server.listen(port, () => {
   console.log(`Crypto Currency Deals listening at http://localhost:${port}`);

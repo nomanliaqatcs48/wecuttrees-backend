@@ -9,7 +9,7 @@ export function verifyJwt(req, res, next) {
           .status(401)
           .json({ code: 401, status: "Error", error: "Authentication failed" });
       } else {
-        req.body.adminId = result.id;
+        req.body.id = result.id;
         next();
       }
     });

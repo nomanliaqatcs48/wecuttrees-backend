@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { User } from "../schema/user";
+import { fileSave } from "../util/fileHandling";
 
 ///signup
 export const signUp = async (req, res, next) => {
@@ -29,7 +30,7 @@ export const login = async (req, res, next) => {
     if (user) {
       const verifyPassword = await bcrypt.compare(password, user.password);
       if (verifyPassword) {
-        const token = jwt.sign({ user: user._id }, "secret", {
+        const token = jwt.sign({ id: user._id }, "secret", {
           expiresIn: "1d",
         });
         const userObject = user.toObject();
@@ -77,7 +78,7 @@ export const connectWallet = async (req, res, next) => {
           code: 200,
           status: "Success",
           message: "Wallet connected!",
-          user: userObject
+          user: userObject,
         });
       } else {
         const userObject = user.toObject();
@@ -86,7 +87,7 @@ export const connectWallet = async (req, res, next) => {
           code: 200,
           status: "Success",
           message: "connected!",
-          user: userObject
+          user: userObject,
         });
       }
     }
@@ -102,5 +103,51 @@ export const getUsers = (req, res, next) => {
     res.status(200).json({ message: "get all users" });
   } catch (error) {
     next(error);
+  }
+};
+
+//update profile
+
+export const updateProfile = async (req, res, next) => {
+  try {
+    const saveData = req.body;
+    let fileName = "";
+
+    const user = await User.findOne({ _id: saveData.id });
+    // console.log('user ====>', user)
+    // console.log('saveData ====>', saveData)
+    if (user) {
+      if (req.body.password !== undefined && req.body.password !== "") {
+        const salt = await bcrypt.genSalt(10);
+        saveData.password = await bcrypt.hash(req.body.password, salt);
+        user.password = saveData.password || user.password;
+      }
+      if (saveData.profilePicture && saveData.profilePicture !== "") {
+        fileName = fileSave(saveData.profilePicture);
+        user.profilePicture = fileName || user.profilePicture;
+        if (!fileName) {
+          res.status(400).json({
+            code: 500,
+            status: "Error",
+            error: "Error while uploading file",
+          });
+        }
+      }
+      user.displayName = saveData.displayName || user.displayName;
+      user.email = saveData.email || user.email;
+
+      await user.save();
+      const userObject = user.toObject();
+      delete userObject.password;
+      res.status(200).json({
+        code: 200,
+        status: "Success",
+        message: "Profile updated!",
+        user: userObject,
+      });
+    }
+  } catch (error) {
+    next(error);
+    res.status(500).json({ code: 500, status: "Error", error });
   }
 };
