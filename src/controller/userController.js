@@ -69,10 +69,8 @@ export const connectWallet = async (req, res, next) => {
     const { userId, wallet } = req.body;
     const user = await User.findById({ _id: userId });
     if (user) {
-      if (user.wallet === undefined) {
-        user.wallet = wallet.toLowerCase();
-        await user.save();
-        const userObject = user.toObject();
+      if ((user.wallet !== undefined) && (user.wallet === wallet.toLowerCase())) {
+          const userObject = user.toObject();
         delete userObject.password;
         res.status(200).json({
           code: 200,
@@ -80,14 +78,22 @@ export const connectWallet = async (req, res, next) => {
           message: "Wallet connected!",
           user: userObject,
         });
-      } else {
+      } else if(user.wallet === undefined)  {
+         user.wallet = wallet.toLowerCase();
+        await user.save();
         const userObject = user.toObject();
         delete userObject.password;
         res.status(200).json({
           code: 200,
           status: "Success",
-          message: "connected!",
+          message: "Wallet registered successfully!",
           user: userObject,
+        });
+      }else{
+        res.status(400).json({
+          code: 400,
+          status: "Error",
+          message: "Please connect your registered wallet!",
         });
       }
     }
