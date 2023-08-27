@@ -125,8 +125,17 @@ export const updateProfile = async (req, res, next) => {
     if (user) {
       if (req.body.password !== undefined && req.body.password !== "") {
         const salt = await bcrypt.genSalt(10);
-        saveData.password = await bcrypt.hash(req.body.password, salt);
-        user.password = saveData.password || user.password;
+        const comparePassword = await bcrypt.compare(req.body.password, user.password)
+        if(comparePassword){
+          saveData.password = await bcrypt.hash(req.body.password, salt);
+          user.password = saveData.password || user.password;
+        }else{
+          res.status(400).json({
+            code: 400,
+            status: "Error",
+            error: "Invalid password",
+          });
+        }
       }
       if (saveData.profilePicture && saveData.profilePicture !== "") {
         fileName = fileSave(saveData.profilePicture);
