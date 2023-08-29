@@ -133,7 +133,7 @@ export const updateProfile = async (req, res, next) => {
           res.status(400).json({
             code: 400,
             status: "Error",
-            error: "Invalid password",
+            message: "Invalid password",
           });
         }
       }
@@ -144,7 +144,7 @@ export const updateProfile = async (req, res, next) => {
           res.status(400).json({
             code: 500,
             status: "Error",
-            error: "Error while uploading file",
+            message: "Error while uploading file",
           });
         }
       }
