@@ -127,7 +127,7 @@ export const updateProfile = async (req, res, next) => {
         const salt = await bcrypt.genSalt(10);
         const comparePassword = await bcrypt.compare(req.body.password, user.password)
         if(comparePassword){
-          saveData.password = await bcrypt.hash(req.body.password, salt);
+          saveData.password = await bcrypt.hash(req.body.updatedPassword, salt);
           user.password = saveData.password || user.password;
         }else{
           res.status(400).json({
