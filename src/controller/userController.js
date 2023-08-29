@@ -69,8 +69,8 @@ export const connectWallet = async (req, res, next) => {
     const { userId, wallet } = req.body;
     const user = await User.findById({ _id: userId });
     if (user) {
-      if ((user.wallet !== undefined) && (user.wallet === wallet.toLowerCase())) {
-          const userObject = user.toObject();
+      if (user.wallet !== undefined && user.wallet === wallet.toLowerCase()) {
+        const userObject = user.toObject();
         delete userObject.password;
         res.status(200).json({
           code: 200,
@@ -78,8 +78,8 @@ export const connectWallet = async (req, res, next) => {
           message: "Wallet connected!",
           user: userObject,
         });
-      } else if(user.wallet === undefined)  {
-         user.wallet = wallet.toLowerCase();
+      } else if (user.wallet === undefined) {
+        user.wallet = wallet.toLowerCase();
         await user.save();
         const userObject = user.toObject();
         delete userObject.password;
@@ -89,7 +89,7 @@ export const connectWallet = async (req, res, next) => {
           message: "Wallet registered successfully!",
           user: userObject,
         });
-      }else{
+      } else {
         res.status(400).json({
           code: 400,
           status: "Error",
@@ -125,24 +125,27 @@ export const updateProfile = async (req, res, next) => {
     if (user) {
       if (req.body.password !== undefined && req.body.password !== "") {
         const salt = await bcrypt.genSalt(10);
-        const comparePassword = await bcrypt.compare(req.body.password, user.password)
-        if(comparePassword){
-          saveData.password = await bcrypt.hash(req.body.updatedPassword, salt);
-          user.password = saveData.password || user.password;
-        }else{
-          res.status(400).json({
+        const comparePassword = await bcrypt.compare(
+          req.body.password,
+          user.password
+        );
+        if (!comparePassword) {
+          return res.status(400).json({
             code: 400,
             status: "Error",
             message: "Invalid password",
           });
+        } else {
+          saveData.password = await bcrypt.hash(req.body.updatedPassword, salt);
+          user.password = saveData.password || user.password;
         }
       }
       if (saveData.profilePicture && saveData.profilePicture !== "") {
         fileName = fileSave(saveData.profilePicture);
         user.profilePicture = fileName || user.profilePicture;
         if (!fileName) {
-          res.status(400).json({
-            code: 500,
+          return res.status(400).json({
+            code: 400,
             status: "Error",
             message: "Error while uploading file",
           });
