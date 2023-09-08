@@ -6,6 +6,7 @@ import http from "http";
 import ErrorHandler from "./middlewears/errorHandler";
 import userRouter from "./routes/userRoutes";
 import { connectDB } from "./util/db";
+import dealRouter from "./routes/dealRoutes";
 
 dotenv.config();
 
@@ -36,6 +37,7 @@ app.get("/", (req, res) => {
 app.use("/public", express.static("public"));
 
 app.use("/api/users", userRouter);
+app.use("/api/deals", dealRouter);
 
 //Error handling middlewear
 app.use(ErrorHandler);

@@ -27,7 +27,7 @@ const userSchema = new Schema({
   },
   favDeals: {
     type: Array,
-    ref: "deals",
+    ref: "deal",
     required: false,
   },
   profilePicture: {
