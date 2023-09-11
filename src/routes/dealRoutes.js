@@ -16,7 +16,7 @@ const dealRouter = express.Router();
 
 dealRouter.post("/create", verifyJwt, create);
 dealRouter.post("/join", verifyJwt, join);
-dealRouter.get("/list", verifyJwt, dealsList);
+dealRouter.get("/list", dealsList);
 dealRouter.post("/getDeal", verifyJwt, getDeal);
 dealRouter.post("/getParticipator", verifyJwt, getParticipator);
 dealRouter.post("/claim", verifyJwt, getClaimdDeals);

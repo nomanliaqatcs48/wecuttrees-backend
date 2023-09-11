@@ -21,6 +21,10 @@ const dealSchema = new Schema(
       type: String,
       required: true,
     },
+    entryPrice: {
+      type: String,
+      required: true,
+    },
     dealEndTime: {
       type: Date,
       required: true,
