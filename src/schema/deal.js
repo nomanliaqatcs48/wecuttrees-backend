@@ -38,10 +38,6 @@ const dealSchema = new Schema(
       type: String,
       required: true,
     },
-    dealerId: {
-      type: String,
-      required: true,
-    },
     participators: {
       type: Array,
       ref: "participators",
