@@ -49,7 +49,7 @@ export const join = async (req, res, next) => {
 ///deals list
 export const dealsList = async (req, res, next) => {
   try {
-    const deals = await Deal.find({}).populate("ownerId");
+    const deals = await Deal.find({}).populate(['ownerId', 'participators']);
     if (!deals) {
       res.status(404).json({
         code: 404,
@@ -122,33 +122,30 @@ export const getParticipator = async (req, res, next) => {
 
 //get claim deals
 
-export const getClaimdDeals = async (req, res, next) => {
-  try {
-    const calimDeals = await Deal.find({
-      $and: [
-        { ownerId: req.body.userId },
-        { dealEndTime: { $lt: new Date() } },
-      ],
-    }).populate("ownerId");
-    if (calimDeals.length === 0) {
-      res.status(404).json({
-        code: 404,
-        status: "Error",
-        message: "No deal found!",
-      });
-    } else {
-      res.status(200).json({
-        code: 200,
-        status: "Success",
-        message: "Claimed deals fetched successfully!",
-        calimDeals,
-      });
-    }
-  } catch (error) {
-    next(error);
-    res.status(500).json({ code: 500, status: "Error", error });
-  }
-};
+// export const getClaimdDeals = async (req, res, next) => {
+//   try {
+//     const calimDeals = await Deal.find({
+//       dealEndTime: { $lt: new Date() },
+//     })
+//     if (calimDeals.length === 0) {
+//       res.status(404).json({
+//         code: 404,
+//         status: "Error",
+//         message: "No deal found!",
+//       });
+//     } else {
+//       res.status(200).json({
+//         code: 200,
+//         status: "Success",
+//         message: "Claimed deals fetched successfully!",
+//         calimDeals,
+//       });
+//     }
+//   } catch (error) {
+//     next(error);
+//     res.status(500).json({ code: 500, status: "Error", error });
+//   }
+// };
 
 // deleted claimed deal
 
@@ -233,6 +230,30 @@ export const getFavDealsList = async (req, res, next) => {
         status: "Success",
         message: "Deal fetched successfully!",
         favDeals: user.favDeals,
+      });
+    }
+  } catch (error) {
+    next(error);
+    res.status(500).json({ code: 500, status: "Error", error });
+  }
+};
+
+///delete claimed deal
+export const DeleteClaimedDeal = async (req, res, next) => {
+  try {
+    const deal = await Deal.findByIdAndDelete({ _id: req.body.dealId });
+    if (!deal) {
+      res.status(404).json({
+        code: 404,
+        status: "Error",
+        message: "No deal found!",
+      });
+    } else {
+      res.status(200).json({
+        code: 200,
+        status: "Success",
+        message: "Deal deleted successfully!",
+        deal,
       });
     }
   } catch (error) {

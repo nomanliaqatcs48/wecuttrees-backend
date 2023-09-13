@@ -19,7 +19,7 @@ dealRouter.post("/join", verifyJwt, join);
 dealRouter.get("/list", dealsList);
 dealRouter.post("/getDeal", verifyJwt, getDeal);
 dealRouter.post("/getParticipator", verifyJwt, getParticipator);
-dealRouter.post("/claim", verifyJwt, getClaimdDeals);
+// dealRouter.get("/claim", verifyJwt, getClaimdDeals);
 dealRouter.post("/delete", verifyJwt, deleteClaimDeal);
 dealRouter.post("/fav", verifyJwt, makeFavDeal);
 dealRouter.post("/favDealList", verifyJwt, getFavDealsList);
