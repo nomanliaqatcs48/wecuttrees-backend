@@ -13,7 +13,7 @@ const userRouter = express.Router();
 userRouter.post("/login", login);
 userRouter.post("/signup", signUp);
 userRouter.post("/connect", verifyJwt, connectWallet);
-userRouter.get("/", verifyJwt, getUsers);
+userRouter.get("/users-list", verifyJwt, getUsers);
 userRouter.post("/update-profile", verifyJwt, updateProfile);
 
 export default userRouter;

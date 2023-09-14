@@ -7,6 +7,7 @@ import ErrorHandler from "./middlewears/errorHandler";
 import userRouter from "./routes/userRoutes";
 import { connectDB } from "./util/db";
 import dealRouter from "./routes/dealRoutes";
+import adminRouter from "./routes/adminRoutes";
 
 dotenv.config();
 
@@ -38,6 +39,7 @@ app.use("/public", express.static("public"));
 
 app.use("/api/users", userRouter);
 app.use("/api/deals", dealRouter);
+app.use("/api/admin", adminRouter);
 
 //Error handling middlewear
 app.use(ErrorHandler);

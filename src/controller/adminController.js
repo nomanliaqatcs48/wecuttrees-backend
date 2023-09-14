@@ -1,20 +1,20 @@
-import jwt from "jsonwebtoken";
+import { Admin } from "../schema/admin";
 import bcrypt from "bcryptjs";
-import { User } from "../schema/user";
+import jwt from "jsonwebtoken";
 import { fileSave } from "../util/fileHandling";
 
 ///signup
-export const signUp = async (req, res, next) => {
+export const adminSignUp = async (req, res, next) => {
   try {
-    const userData = req.body;
+    const adminData = req.body;
     const salt = await bcrypt.genSalt(10);
-    userData.password = await bcrypt.hash(req.body.password, salt);
-    const user = await User.create(userData);
+    adminData.password = await bcrypt.hash(req.body.password, salt);
+    const admin = await Admin.create(adminData);
     res.status(200).json({
       code: 200,
       status: "Success",
-      message: "Sign up successfully!",
-      user: user,
+      message: "Register successfully!",
+      user: admin,
     });
   } catch (error) {
     next(error);
@@ -23,23 +23,23 @@ export const signUp = async (req, res, next) => {
 };
 
 //login
-export const login = async (req, res, next) => {
+export const adminLogin = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email: email });
-    if (user) {
-      const verifyPassword = await bcrypt.compare(password, user.password);
+    const admin = await Admin.findOne({ email: email });
+    if (admin) {
+      const verifyPassword = await bcrypt.compare(password, admin.password);
       if (verifyPassword) {
-        const token = jwt.sign({ id: user._id }, "secret", {
+        const token = jwt.sign({ id: admin._id }, "secret", {
           expiresIn: "1d",
         });
-        const userObject = user.toObject();
-        delete userObject.password;
+        const adminObject = admin.toObject();
+        delete adminObject.password;
         res.status(200).json({
           code: 200,
           status: "Success",
           message: "Successfully logedin",
-          user: userObject,
+          admin: adminObject,
           token,
         });
       } else {
@@ -62,70 +62,14 @@ export const login = async (req, res, next) => {
   }
 };
 
-//connnect wallet
-
-export const connectWallet = async (req, res, next) => {
-  try {
-    const { userId, wallet } = req.body;
-    const user = await User.findById({ _id: userId });
-    if (user) {
-      if (user.wallet !== undefined && user.wallet === wallet.toLowerCase()) {
-        const userObject = user.toObject();
-        delete userObject.password;
-        res.status(200).json({
-          code: 200,
-          status: "Success",
-          message: "Wallet connected!",
-          user: userObject,
-        });
-      } else if (user.wallet === undefined) {
-        user.wallet = wallet.toLowerCase();
-        await user.save();
-        const userObject = user.toObject();
-        delete userObject.password;
-        res.status(200).json({
-          code: 200,
-          status: "Success",
-          message: "Wallet registered successfully!",
-          user: userObject,
-        });
-      } else {
-        res.status(400).json({
-          code: 400,
-          status: "Error",
-          message: "Please connect your registered wallet!",
-        });
-      }
-    }
-  } catch (error) {
-    next(error);
-    res.status(500).json({ code: 500, status: "Error", error });
-  }
-};
-
-//get all users
-export const getUsers = async (req, res, next) => {
-  try {
-    const users = await User.find({}).select("-password");
-    res.status(200).json({
-      code: 200,
-      status: "Success",
-      message: "Users fetched successfully!",
-      users,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
 //update profile
 
-export const updateProfile = async (req, res, next) => {
+export const adminUpdateProfile = async (req, res, next) => {
   try {
     const saveData = req.body;
     let fileName = "";
 
-    const user = await User.findOne({ _id: saveData.id });
+    const user = await Admin.findOne({ _id: saveData.id });
     // console.log('user ====>', user)
     // console.log('saveData ====>', saveData)
     if (user) {
@@ -173,5 +117,20 @@ export const updateProfile = async (req, res, next) => {
   } catch (error) {
     next(error);
     res.status(500).json({ code: 500, status: "Error", error });
+  }
+};
+
+//get all admins
+export const getAdmins = async (req, res, next) => {
+  try {
+    const users = await Admin.find({}).select("-password");
+    res.status(200).json({
+      code: 200,
+      status: "Success",
+      message: "Admins fetched successfully!",
+      users,
+    });
+  } catch (error) {
+    next(error);
   }
 };
