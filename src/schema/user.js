@@ -39,6 +39,10 @@ const userSchema = new Schema({
     required: false,
     default: 'un-verified'
   },
-});
+},
+{
+  timestamps: true,
+}
+);
 
 export const User = mongoose.model("user", userSchema);

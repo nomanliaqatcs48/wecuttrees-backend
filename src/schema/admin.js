@@ -26,6 +26,10 @@ const adminSchema = new Schema({
     type: String,
     required: false,
   },
-});
+},
+{
+    timestamps: true,
+}
+);
 
 export const Admin = mongoose.model("admin", adminSchema);
