@@ -10,6 +10,7 @@ import {
   getParticipator,
   join,
   makeFavDeal,
+  updateDeal,
 } from "../controller/dealController";
 
 const dealRouter = express.Router();
@@ -23,5 +24,6 @@ dealRouter.post("/getParticipator", verifyJwt, getParticipator);
 dealRouter.post("/delete", verifyJwt, deleteClaimDeal);
 dealRouter.post("/fav", verifyJwt, makeFavDeal);
 dealRouter.post("/favDealList", verifyJwt, getFavDealsList);
+dealRouter.post("/update", verifyJwt, updateDeal);
 
 export default dealRouter;

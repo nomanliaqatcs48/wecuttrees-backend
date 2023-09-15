@@ -180,12 +180,23 @@ export const updateProfile = async (req, res, next) => {
 
 export const deleteUser = async (req, res, next) => {
   try {
-    await User.findByIdAndDelete({ _id: req.body.userId });
-    res.status(200).json({
-      code: 200,
-      status: "Success",
-      message: "User deleted successfully!",
-    });
+    const user = await User.findByIdAndDelete({ _id: req.body.userId });
+    if(user !== null){
+      res.status(200).json({
+        code: 200,
+        status: "Success",
+        message: "User deleted successfully!",
+        user
+      });
+    }else{
+      res.status(404).json({
+        code: 404,
+        status: "Error",
+        message: "User not found!",
+        user
+      });
+    }
+    
   } catch (error) {
     next(error);
     res.status(500).json({ code: 500, status: "Error", error });

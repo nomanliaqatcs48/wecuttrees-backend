@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import { Deal } from "../schema/deal";
 import { Participators } from "../schema/participators";
 import { User } from "../schema/user";
@@ -253,6 +252,35 @@ export const DeleteClaimedDeal = async (req, res, next) => {
         code: 200,
         status: "Success",
         message: "Deal deleted successfully!",
+        deal,
+      });
+    }
+  } catch (error) {
+    next(error);
+    res.status(500).json({ code: 500, status: "Error", error });
+  }
+};
+
+///get update deal
+export const updateDeal = async (req, res, next) => {
+  try {
+    const deal = await Deal.findById({ _id: req.body.dealId });
+    if (!deal) {
+      res.status(404).json({
+        code: 404,
+        status: "Error",
+        message: "No deal found!",
+      });
+    } else {
+      const saveData = req.body
+      deal.coinName = saveData.dealName || deal.coinName
+      deal.dealEndTime = saveData.expirationDate || deal.dealEndTime
+      deal.targetPrice = saveData.maxPrice || deal.targetPrice
+      deal.save()
+      res.status(200).json({
+        code: 200,
+        status: "Success",
+        message: "Deal updated successfully!",
         deal,
       });
     }

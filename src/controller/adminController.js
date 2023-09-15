@@ -139,12 +139,22 @@ export const getAdmins = async (req, res, next) => {
 
 export const deleteAdmin = async (req, res, next) => {
     try {
-      await Admin.findByIdAndDelete({ _id: req.body.adminId });
-      res.status(200).json({
-        code: 200,
-        status: "Success",
-        message: "Admin deleted successfully!",
-      });
+        const user = await Admin.findByIdAndDelete({ _id: req.body.userId });
+        if(user !== null){
+          res.status(200).json({
+            code: 200,
+            status: "Success",
+            message: "Admin deleted successfully!",
+            user
+          });
+        }else{
+          res.status(404).json({
+            code: 404,
+            status: "Error",
+            message: "Admin not found!",
+            user
+          });
+        }
     } catch (error) {
       next(error);
       res.status(500).json({ code: 500, status: "Error", error });
