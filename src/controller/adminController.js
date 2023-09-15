@@ -134,3 +134,19 @@ export const getAdmins = async (req, res, next) => {
     next(error);
   }
 };
+
+// delete admin
+
+export const deleteAdmin = async (req, res, next) => {
+    try {
+      await Admin.findByIdAndDelete({ _id: req.body.adminId });
+      res.status(200).json({
+        code: 200,
+        status: "Success",
+        message: "Admin deleted successfully!",
+      });
+    } catch (error) {
+      next(error);
+      res.status(500).json({ code: 500, status: "Error", error });
+    }
+  };

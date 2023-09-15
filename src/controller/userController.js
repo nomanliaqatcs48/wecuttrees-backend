@@ -175,3 +175,19 @@ export const updateProfile = async (req, res, next) => {
     res.status(500).json({ code: 500, status: "Error", error });
   }
 };
+
+// delete user
+
+export const deleteUser = async (req, res, next) => {
+  try {
+    await User.findByIdAndDelete({ _id: req.body.userId });
+    res.status(200).json({
+      code: 200,
+      status: "Success",
+      message: "User deleted successfully!",
+    });
+  } catch (error) {
+    next(error);
+    res.status(500).json({ code: 500, status: "Error", error });
+  }
+};
